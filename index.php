@@ -17,5 +17,5 @@ if (hash_equals($val1,$hash)){
 	</form>
 </html>
 <?php
-}
+}else {echo "Date eronate";}
 ?>
