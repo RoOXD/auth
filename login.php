@@ -21,7 +21,13 @@ if(isset($_POST['submit'])) {
 	$dbconn = pg_connect("host=localhost port=5432 dbname=auth user=postgres");
 
 	$name = $_POST['name'];
-	setcookie("UserCookie", $name);
+
+	$key="14011999";
+	$haz=hash_hmac('md5',$name,$key);
+	$secret="$name.$haz";
+	setcookie("UserCookie", $secret);
+	
+	
 	$note = $_POST['note'];
 
 	$query = pg_query($dbconn, "SELECT password FROM users WHERE username='$name'");
