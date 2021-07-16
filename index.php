@@ -17,5 +17,8 @@ if (hash_equals($val1,$hash)){
 	</form>
 </html>
 <?php
-}else {echo "Date eronate";}
+}else {
+	echo "Date eronate";
+	setcookie("UserCookie", null, -1, '/');
+}
 ?>
