@@ -1,4 +1,6 @@
 <?php
+require 'auth.php';
+
 if (isset($_COOKIE["UserCookie"])&&!empty($_COOKIE["UserCookie"])){
 
 	header('Location: http://127.0.0.1:9000/index.php');
@@ -18,18 +20,16 @@ Parola: <input type="password" name="password" minlength="6" required><br>
 </html>
 <?php
 if(isset($_POST['submit'])) {
-	$dbconn = pg_connect("host=localhost port=5432 dbname=auth user=postgres");
+	$dbconn = $dbconn = conectare("localhost","5432","auth","postgres");
 
-	$username = $_POST['username'];
-
-	$key="14011999";
-	
+	$username = $_POST['username'];	
 	
 	$password = $_POST['password'];
 
-	$query = pg_query($dbconn, "SELECT id, password FROM users WHERE username='$username'");
+	$instr = "SELECT id, password FROM users WHERE username='$username'";
+	$query = cerere($dbconn, $instr);
 	
-	$arr = pg_fetch_array($query, 0, PGSQL_NUM);
+	$arr = extragere($query);
 	if (password_verify($password, $arr[1])) {
 
 		 $hash=hash_hmac('md5',$arr[0],$key);

@@ -1,17 +1,30 @@
+  
 <?php
+require 'auth.php';
 
-$dbconn = pg_connect("host=localhost port=5432 dbname=auth user=postgres");
+if(isset($_POST['submit'])) {
+$dbconn = conectare("localhost","5432","auth","postgres");
 
-pg_close($dbconn);
+$username = htmlspecialchars($_POST['username'],ENT_QUOTES);
+$password = password_hash($_POST['password'],PASSWORD_BCRYPT);
 
+$query = pg_query_params($dbconn, 'INSERT INTO users (username, password) VALUES ($1,$2)', array($username,$password));
+if ( $query ) {
+
+	echo  "Inregistrare efectuata cu succes";
+}else{
+	
+	echo "Nume de utilizator luat!";
+      }
+}
 ?>
 <html>
 <body>
 <p>Formular inregistrare.Introduceti datele.</p>
-<form action="action.php" method="post">
-Nume utilizator: <input type="text" name="name" required><br>
-Parola: <input type="password" name="note" minlength="6" required><br>
-<input type="submit" name="submit" value="Submit">
+<form action="register.php" method="post">
+Nume utilizator: <input type="text" name="username" required><br>
+Parola: <input type="password" name="password" minlength="6" required><br>
+<input type="submit" name="submit" value="Inregistrare">
 </form>
 
 </body>
