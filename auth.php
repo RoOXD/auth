@@ -2,22 +2,23 @@
 
 $key="14011999";
 
-function conectare($host,$port,$nume,$user){
-
-	$dbconn = pg_connect("host=$host port=$port dbname=$nume user=$user");
-	return $dbconn;
-
-}
-function cerere($dbconn,$instructiune){
-
-	$query = pg_query($dbconn, $instructiune);
-	return $query;
-
-}
-function extragere($query){
-
-	$arr = pg_fetch_array($query, 0, PGSQL_NUM);
-	return $arr;
-}
+function hashUserID($id) {
+	return hash_hmac('md5', $id, $key);
+  }
+  
+  function encodeUserID($id) {
+	$hash = hashUserID($id);
+	return "$id.$hash";
+  }
+  
+  function decodeUserID($value) {
+	$parts = explode(".", $value);
+	$id = $parts[0];
+	$hash = $parts[1];
+	if (hash_equals(hashUserID($id), $hash)) {
+	  return 1;
+	}
+	return 0;
+  }
 
 ?>

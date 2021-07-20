@@ -20,22 +20,19 @@ Parola: <input type="password" name="password" minlength="6" required><br>
 </html>
 <?php
 if(isset($_POST['submit'])) {
-	$dbconn = $dbconn = conectare("localhost","5432","auth","postgres");
+	$dbconn = pg_connect("host=localhost port=5432 dbname=auth user=postgres");
 
 	$username = $_POST['username'];	
 	
 	$password = $_POST['password'];
 
-	$instr = "SELECT id, password FROM users WHERE username='$username'";
-	$query = cerere($dbconn, $instr);
+	$query = pg_query_params($dbconn, 'SELECT id, password FROM users WHERE username=$1',array($username));
 	
-	$arr = extragere($query);
+	$arr = pg_fetch_array($query, 0, PGSQL_NUM);
 	if (password_verify($password, $arr[1])) {
-
-		 $hash=hash_hmac('md5',$arr[0],$key);
-        	 $secret="$arr[0].$hash";
-        	 setcookie("UserCookie", $secret);
-        	 header('Location: http://127.0.0.1:9000/index.php');
+			$secret=encodeUserID($arr[0]);
+        	setcookie("UserCookie", $secret);
+        	header('Location: http://127.0.0.1:9000/index.php');
 	} else {
         	echo 'Parola incorecta.';
 ?>

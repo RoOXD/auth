@@ -3,18 +3,12 @@ require 'auth.php';
 
 	
 $value=$_COOKIE["UserCookie"];
-$parts = explode(".", $value);
-$id = $parts[0];
-$hash = $parts[1];
 
-$val1=hash_hmac('md5',$id, $key);
-
-if (hash_equals($val1,$hash)){
+if (decodeUserID($value)){
 	
-	$dbconn = conectare("localhost","5432","auth","postgres");
-	$instr="SELECT username FROM users WHERE id='$id'";
-	$query = cerere($dbconn, $instr);
-	$arr = extragere($query);
+	$dbconn = pg_connect("host=localhost port=5432 dbname=auth user=postgres");
+	$query = pg_query_params($dbconn, 'SELECT username FROM users WHERE id=$1',array($id));
+	$arr = pg_fetch_array($query, 0, PGSQL_NUM);
 	echo "Sunteti logat ca $arr[0].";
 ?>
 <html>	

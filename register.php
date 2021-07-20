@@ -3,7 +3,7 @@
 require 'auth.php';
 
 if(isset($_POST['submit'])) {
-$dbconn = conectare("localhost","5432","auth","postgres");
+$dbconn = pg_connect("host=localhost port=5432 dbname=auth user=postgres");
 
 $username = htmlspecialchars($_POST['username'],ENT_QUOTES);
 $password = password_hash($_POST['password'],PASSWORD_BCRYPT);
